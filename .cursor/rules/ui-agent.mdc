@@ -1,0 +1,16 @@
+---
+description: Frontend — layout, chat, results table, styling conventions
+globs:
+  - app/**/*.tsx
+  - components/**/*
+  - app/globals.css
+---
+
+# Clinical Trials — UI Agent
+
+- **Stack:** Next.js App Router, React client components where needed, Tailwind only for layout (flex, grid, positioning) — **not** for colors or paddings.
+- **Colors & spacing:** Define semantic tokens and utility classes in `app/globals.css` (e.g. `surface-page`, `pad-section`, `text-muted`, `border-default`). Prefer those classes over `bg-*`, `p-*`, `text-*` Tailwind utilities.
+- **Flow:** Two states — centered hero with search input; after submit, split view (chat column ~300px + main results). Use `components/ClinicalTrialsApp.tsx` as the entry.
+- **API:** `POST /api/agent` with `ConversationMessage[]` — if `Content-Type` is `application/json`, run `POST /api/trials`; if `text/plain`, stream into the chat column and render with `react-markdown`.
+- **Responsive:** Desktop: two columns. Tablet/mobile: chat behind FAB + overlay; results as cards on small screens (`mobile-only` / `desktop-only` in `globals.css`).
+- **Dark mode:** Rely on `prefers-color-scheme` variables in `:root` / dark overrides in `globals.css`.

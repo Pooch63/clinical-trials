@@ -1,0 +1,16 @@
+---
+description: Server/API work — agent, ClinicalTrials.gov, types, scoring
+globs:
+  - app/api/**/*
+  - lib/**/*
+  - types/**/*
+---
+
+# Clinical Trials — Server Agent
+
+- **Stack:** Next.js App Router, `app/api/*/route.ts`, TypeScript only.
+- **Agent:** `POST /api/agent` → `lib/agentRunner.ts` (HTTP) → **`lib/llm.ts`** (all `client.messages.create` calls: extended thinking, web search `web_search_20250305`, tool `submit_search_strategy`). Plain text clarifications use `text/plain` (chunked stream); strategies use `application/json`.
+- **Trials:** `POST /api/trials` calls `https://clinicaltrials.gov/api/v2/studies` with `lib/constants.ts` field list, paginates with `pageToken`, caps at 5000, backoff on 429 (2s → 4s → 8s).
+- **Types:** Shared contracts live in `types/index.ts`; validate strategies with `lib/searchStrategy.ts` (`isSearchStrategy`).
+- **Mapping:** API responses are nested under `protocolSection`; see `lib/clinicaltrials.ts` — not flat `fields` objects.
+- **Do not** add a database for MVP; keep session state in the client.
