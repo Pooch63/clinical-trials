@@ -140,6 +140,11 @@ body {
   gap: var(--space-lg);
 }
 
+/* Extra separation between chat turns (user + assistant blocks) */
+.chat-turns {
+  gap: var(--space-xl);
+}
+
 .margin-block-sm {
   margin-bottom: var(--space-sm);
 }
@@ -193,6 +198,7 @@ body {
 .column-chat {
   width: var(--sidebar-width);
   min-width: var(--sidebar-width);
+  min-height: 0;
   border-right: 1px solid var(--color-border);
   background: var(--color-bg-elevated);
   display: flex;
@@ -202,6 +208,7 @@ body {
 .column-main {
   flex: 1;
   min-width: 0;
+  min-height: 0;
   display: flex;
   flex-direction: column;
 }

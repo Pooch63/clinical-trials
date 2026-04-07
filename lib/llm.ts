@@ -121,15 +121,22 @@ export async function queryAgentLlmStreaming(
     }
   }
 
-  if (mode === "strategy") {
+  // Prefer a completed submit_search_strategy tool even when a text block started first
+  // (mode would be "text", but strategyJsonAccum still holds the tool input).
+  const toolJson = strategyJsonAccum.trim();
+  if (toolJson) {
     try {
-      const parsed = strategyJsonAccum.trim() ? JSON.parse(strategyJsonAccum) : null;
-      if (parsed && isSearchStrategy(parsed)) {
+      const parsed = JSON.parse(toolJson) as unknown;
+      if (isSearchStrategy(parsed)) {
         return { outcome: "strategy", strategy: parsed };
       }
     } catch {
       /* fall through */
     }
+    return { outcome: "malformed", raw: strategyJsonAccum || textAccum };
+  }
+
+  if (mode === "strategy") {
     return { outcome: "malformed", raw: strategyJsonAccum || textAccum };
   }
 

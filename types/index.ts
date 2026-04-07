@@ -7,7 +7,7 @@ export type TrialStatus =
   | "TERMINATED"
   | "WITHDRAWN";
 
-export type Phase = "PHASE1" | "PHASE2" | "PHASE3" | "PHASE4" | "NA";
+export type Phase = "Phase1" | "Phase2" | "Phase3" | "Phase4" | "NA";
 
 export type InterventionType =
   | "DRUG"

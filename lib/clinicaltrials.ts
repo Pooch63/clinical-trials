@@ -36,11 +36,11 @@ function mapOverallStatus(raw: string | undefined): TrialStatus {
 function mapPhase(p: string | undefined): Phase | null {
   if (!p) return null;
   const map: Record<string, Phase> = {
-    EARLY_PHASE1: "PHASE1",
-    PHASE1: "PHASE1",
-    PHASE2: "PHASE2",
-    PHASE3: "PHASE3",
-    PHASE4: "PHASE4",
+    EARLY_PHASE1: "Phase1",
+    PHASE1: "Phase1",
+    PHASE2: "Phase2",
+    PHASE3: "Phase3",
+    PHASE4: "Phase4",
     NA: "NA",
   };
   return map[p] ?? null;
@@ -207,7 +207,20 @@ export async function fetchAllStudies(
     params["query.term"] = strategy.broader_term_query;
   }
   if (strategy.phases !== "ANY") {
-    params["filter.phase"] = strategy.phases.join(",");
+    const phaseAreaClauses = strategy.phases
+      .map((p) => `AREA[Phase]${p}`)  // e.g. AREA[Phase]Phase1
+      .join(" OR ");
+    
+    const phaseQuery = strategy.phases.length > 1
+      ? `(${phaseAreaClauses})`
+      : phaseAreaClauses;
+  
+    // Append to existing query.term if present, or set it
+    if (params["query.term"]) {
+      params["query.term"] += ` AND ${phaseQuery}`;
+    } else {
+      params["query.term"] = phaseQuery;
+    }
   }
 
   const collected: unknown[] = [];
@@ -240,6 +253,7 @@ export async function fetchAllStudies(
 
     if (!res.ok) {
       const msg = await res.text();
+      console.error("[ClinicalTrials] fetch error", { status: res.status, message: msg.slice(0, 500) });
       return {
         studies: collected,
         capped,
