@@ -17,7 +17,7 @@ const STATUSES: TrialStatus[] = [
   "WITHDRAWN",
 ];
 
-const PHASES: Phase[] = ["PHASE1", "PHASE2", "PHASE3", "PHASE4", "NA"];
+const PHASES: Phase[] = ["Phase1", "Phase2", "Phase3", "Phase4", "NA"];
 
 const INTERVENTION_TYPES: InterventionType[] = [
   "DRUG",
